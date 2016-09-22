@@ -5,7 +5,6 @@
  - intro: Todo MVC implemented to show a more realistic example.
 *)
 
-
 #r "../node_modules/fable-core/Fable.Core.dll"
 #load "../node_modules/fable-arch/Fable.Arch.Html.fs"
 #load "../node_modules/fable-arch/Fable.Arch.App.fs"
