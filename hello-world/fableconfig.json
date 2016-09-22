@@ -1,0 +1,8 @@
+{
+    "projFile": "hello-world.fsx",
+    "outDir": "out",
+    "module": "commonjs",
+    "scripts": {
+        "postbuild": "node out/hello-world.js"
+    }
+}
