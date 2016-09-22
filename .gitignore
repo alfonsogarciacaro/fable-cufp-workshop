@@ -1,6 +1,7 @@
 .vscode/
 **/out/
-**/bundle.js
+**/temp
+**/bundle.js*
 node_modules/
 
 ## Ignore Visual Studio temporary files, build results, and
