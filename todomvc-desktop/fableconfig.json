@@ -1,0 +1,15 @@
+{
+    "module": "commonjs",
+    "projFile": "src/files.fsx",
+    "outDir": "temp",
+    "scripts": {
+        "postbuild": "node ../node_modules/webpack/bin/webpack"
+    },
+    "targets": {
+        "debug": {
+            "watch": true,
+            "symbols": ["DEBUG"],
+            "sourceMaps": true
+        }        
+    }
+}

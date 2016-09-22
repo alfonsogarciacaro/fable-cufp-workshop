@@ -1,0 +1,8 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "node ../node_modules/fable-compiler",
+    "build-debug": "node ../node_modules/fable-compiler -d",
+    "start": "node ../node_modules/electron-prebuilt/cli app/js/main.js"
+  }
+}

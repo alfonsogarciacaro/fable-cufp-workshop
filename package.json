@@ -13,10 +13,13 @@
   "dependencies": {
     "core-js": "^2.4.1",
     "css-loader": "^0.25.0",
+    "director": "^1.2.8",
+    "electron-prebuilt": "^1.4.1",
     "fable-arch": "^0.9.4",
     "fable-compiler": "^0.6.7",
     "fable-compiler-netcore": "^0.6.7",
     "fable-core": "^0.6.3",
+    "fable-import-electron": "0.0.6",
     "fable-import-fetch": "^0.0.2",
     "fable-import-pixi": "0.0.7",
     "fable-import-react": "0.5.2",

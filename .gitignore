@@ -2,6 +2,7 @@
 **/out/
 **/temp
 **/bundle.js*
+todomvc-desktop/app/js
 node_modules/
 
 ## Ignore Visual Studio temporary files, build results, and
