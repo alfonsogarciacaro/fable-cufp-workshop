@@ -93,6 +93,7 @@ let drawText(text,x,y) =
   ctx.fillStyle <- U3.Case1 "white"
   ctx.font <- "bold 40pt";
   ctx.fillText(text, x, y)
+
 (**
 ## Representing and drawing blobs
 
@@ -100,14 +101,17 @@ Each of the balls in the game is represented by a `Blob` value that stores
 the X and Y coordinates, size of the blob (radius), its colour and current speed.
 The type is used for both falling blobs and for the player's blob:
 *)
+
 type Blob =
   { X:float; Y:float;
     vx:float; vy:float;
     Radius:float; color:string }
+
 (**
 Drawing blob on the canvas is quite easy - the following function does that using
 the `arc` function of the 2D rendering context of the canvas:
 *)
+
 let drawBlob (ctx:CanvasRenderingContext2D)
     (canvas:HTMLCanvasElement) (blob:Blob) =
   ctx.beginPath()
@@ -119,6 +123,7 @@ let drawBlob (ctx:CanvasRenderingContext2D)
   ctx.lineWidth <- 3.
   ctx.strokeStyle <- U3.Case1 blob.color
   ctx.stroke()
+
 (**
 
 ## Falling blobs and collisions
@@ -127,6 +132,7 @@ The next step is to define the physics for the game. This consists of several
 functions that update the `Blob` objects and are composed to apply all rules of
 physics in the main game loop.
 *)
+
 /// Apply key effects on Player's blob - changes X speed
 let direct (dx,dy) (blob:Blob) =
   { blob with vx = blob.vx + (float dx)/4.0 }
@@ -156,21 +162,24 @@ The above functions capture the individual aspects of the movement. The
 following put everything together and handle steps of Player's blob and
 also collision detection.
 *)
-/// Apply step on Player's blob. Composes above functions.
+
+/// Apply step on Player's blob.
 let step dir blob =
-  blob |> direct dir |> move |> bounce
+  // Compose functions above
+  failwith "TODO"
 
 /// Check whether two blobs collide
 let collide (a:Blob) (b:Blob) =
   let dx = (a.X - b.X)*(a.X - b.X)
   let dy = (a.Y - b.Y)*(a.Y - b.Y)
   let dist = sqrt(dx + dy)
-  dist < abs(a.Radius - b.Radius)
+  // Return true if blobs collide
+  failwith "TODO"
 
 /// Remove all falling blobs that hit Player's blob
 let absorb (blob:Blob) (drops:Blob list) =
-  drops |> List.filter (fun drop ->
-    collide blob drop |> not )
+  failwith "TODO"
+
 (**
 ## Game logic helpers
 
@@ -178,6 +187,7 @@ Next, we define a couple of helpers for generating and updating the falling blob
 We have black growing blobs and white shrinking blobs. The `newGrow` and `newShrink`
 functions are used to generate new blobs:
 *)
+
 let grow = "black"
 let shrink = "white"
 
@@ -188,6 +198,7 @@ let newDrop color =
 
 let newGrow () = newDrop grow
 let newShrink () = newDrop shrink
+
 (**
 Inside the game loop, we will generate blobs randomly, but we keep a counter of
 ticks to make sure that we do not generate new blobs too often. The `updateDrops`
@@ -200,13 +211,16 @@ a new countdown. It implements simple logic:
  - Otherwise, do nothing and return previous state
 
 *)
+
 /// Update drops and countdown in each step
 let updateDrops drops countdown =
-  if countdown > 0 then
-    drops, countdown - 1
-  elif floor(rand()*8.) = 0. then
+  if countdown > 0
+  then drops, countdown - 1
+  elif floor(rand()*8.) = 0.
+  then
     let drop =
-      if floor(rand()*3.) = 0. then newGrow()
+      if floor(rand()*3.) = 0.
+      then newGrow()
       else newShrink()
     drop::drops, 8
   else drops, countdown
@@ -214,9 +228,8 @@ let updateDrops drops countdown =
 /// Count growing and shrinking drops in the list
 let countDrops drops =
   let count color =
-    drops
-    |> List.filter (fun drop -> drop.color = color)
-    |> List.length
+    // Count drops of specific color
+    failwith "TODO"
   count grow, count shrink
 
 (**
@@ -250,6 +263,7 @@ Using asynchronous workflows, the state machine can be represented using 3 mutua
 recursive functions, each representing one of the states. The `game` and `completed`
 states are simple:
 *)
+
 /// Starts a new game
 let rec game () = async {
   let blob =
@@ -262,12 +276,14 @@ and completed () = async {
   drawText ("COMPLETED",320.,300.)
   do! Async.Sleep 10000
   return! game () }
+
 (**
 Note that we are using `let rec .. and`, which lets us write multiple recursive functions
 that can call each other. The `completed` function calls `game` after 10 seconds using
 `return!` (representing an asynchronous tail-call) and the `game` function calls `update`
 with the initial state. The `update` loop looks as follows:
 *)
+
 /// Keeps current state for Player's blob, falling
 /// drops and the countdown since last drop was generated
 and update blob drops countdown = async {
@@ -277,9 +293,9 @@ and update blob drops countdown = async {
   // Count drops, apply physics and count them again
   let beforeGrow, beforeShrink = countDrops drops
   let drops =
-    drops
-    |> List.map (gravity >> move)
-    |> absorb blob
+    // Apply transformations (gravity and move)
+    // and remove colliding drops
+    failwith "TODO"
   let afterGrow, afterShrink = countDrops drops
   let drops = drops |> List.filter (fun blob -> blob.Y > 0.)
 
@@ -299,13 +315,15 @@ and update blob drops countdown = async {
 
   // If the game completed, switch state
   // otherwise sleep and update recursively!
-  if blob.Radius > 150. then
-    return! completed()
+  if blob.Radius > 150.
+  then return! completed()
   else
     do! Async.Sleep(int (1000. / 60.))
     return! update blob drops countdown }
+
 (**
 The last thing that we need to do is to start the game in the initial `game`
 state using `Async.StartImmediate`:
 *)
+
 game () |> Async.StartImmediate
