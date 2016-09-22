@@ -30,20 +30,18 @@ type Filter =
     | Completed
     | Active
 
-type Item =
-    {
-        Name: string
-        Done: bool
-        Id: int
-        IsEditing: bool
-    }
+type Item = {
+    Name: string
+    Done: bool
+    Id: int
+    IsEditing: bool
+}
 
-type Model =
-    {
-        Items: Item list
-        Input: string
-        Filter: Filter
-    }
+type Model = {
+    Items: Item list
+    Input: string
+    Filter: Filter
+}
 
 type TodoAction =
     | NoOp
@@ -70,49 +68,37 @@ let update model msg =
         |> updateItems model
 
     let updateItem i model =
-        List.map (fun i' ->
-                if i'.Id <> i.Id then i' else i)
+        List.map (fun i' -> if i'.Id <> i.Id then i' else i)
         |> updateItems model
 
     let model' =
+        // Implement the missing operations
         match msg with
         | NoOp -> model
         | AddItem str ->
             let maxId =
                 if model.Items |> List.isEmpty then 1
-                else
-                    model.Items
-                    |> List.map (fun x -> x.Id)
-                    |> List.max
+                else failwith "TODO"
             (fun items ->
                 items @ [{  Id = maxId + 1
                             Name = str
                             Done = false
                             IsEditing = false}])
             |> updateItems {model with Input = ""}
-        | ChangeInput v -> {model with Input = v}
-        | MarkAsDone i ->
-            updateItem {i with Done = true} model
-        | CheckAll -> checkAllWith true
-        | UnCheckAll -> checkAllWith false
-        | Destroy i ->
-            List.filter (fun i' -> i'.Id <> i.Id)
-            |> updateItems model
-        | ToggleItem i ->
-            updateItem {i with Done = not i.Done} model
-        | SetActiveFilter f ->
-            { model with Filter = f }
-        | ClearCompleted ->
-            List.filter (fun i -> not i.Done)
-            |> updateItems model
-        | EditItem i ->
-            updateItem { i with IsEditing = true} model
-        | SaveItem (i,str) ->
-            updateItem { i with Name = str; IsEditing = false} model
-
+        | ChangeInput v -> failwith "TODO"
+        | MarkAsDone i -> failwith "TODO"
+        | CheckAll -> failwith "TODO"
+        | UnCheckAll -> failwith "TODO"
+        | Destroy i -> failwith "TODO"
+        | ToggleItem i -> failwith "TODO"
+        | SetActiveFilter f -> failwith "TODO"
+        | ClearCompleted -> failwith "TODO"
+        | EditItem i -> failwith "TODO"
+        | SaveItem (i,str) -> failwith "TODO"
     let jsCall =
         match msg with
-        | EditItem i -> toActionList <| fun x -> document.getElementById("item-" + (i.Id.ToString())).focus()
+        | EditItem i -> toActionList(fun x ->
+            document.getElementById("item-" + (i.Id.ToString())).focus())
         | _ -> []
     model', jsCall
 
@@ -146,46 +132,53 @@ let todoFooter model =
         |> List.filter (fun i -> not i.Done)
         |> List.length |> string
     footer
-        [   attribute "class" "footer"; Style ["display","block"]]
-        [   span
-                [   attribute "class" "todo-count" ]
-                [   strong [] [text activeCount]
-                    text " items left" ]
-            (filters model)
-            button
-                [   attribute "class" "clear-completed"
-                    Style [ "display", clearVisibility ]
-                    onMouseClick (fun _ -> ClearCompleted)]
-                [ text "Clear completed" ] ]
+        [ attribute "class" "footer"; Style ["display","block"] ]
+        [ span [ attribute "class" "todo-count" ]
+               [ strong [] [ text activeCount ]
+                 text " items left" ]
+          filters model
+          // Display a button with the text "Clear completed",
+          // classname "clear-completed" and display style
+          // matching `clearVisibility`, which triggers the
+          // appropriate action on mouse click.
+          failwith "TODO" ]
 
-let inline onInput x = onEvent "oninput" (fun e -> x (unbox e?target?value)) 
-let onEnter succ nop = onKeyup (fun x -> if (unbox x?keyCode) = 13 then let value = (x?target?value).ToString() in x?target?value <- ""; succ value else nop)
+let inline onInput x =
+    onEvent "oninput" (fun e -> x (unbox e?target?value)) 
+
+let onEnter succ nop =
+    onKeyup (fun x ->
+        if (unbox x?keyCode) = 13
+        then let value = (x?target?value).ToString() in x?target?value <- ""; succ value
+        else nop)
+
 let todoHeader model =
     header
-        [attribute "class" "header"]
-        [   h1 [] [text "todos"]
-            input [ attribute "class" "new-todo"
-                    attribute "id" "new-todo"
-//                    property "value" model
-                    property "placeholder" "What needs to be done?"
-//                    onInput (fun x -> ChangeInput x)
-                    onEnter AddItem NoOp ]]
+        [ attribute "class" "header" ]
+        [ h1 [] [ text "todos" ]
+          input [ attribute "class" "new-todo"
+                  attribute "id" "new-todo"
+//                  property "value" model
+                  property "placeholder" "What needs to be done?"
+//                  onInput (fun x -> ChangeInput x)
+                  onEnter AddItem NoOp ]]
+
 let listItem item =
     let itemChecked = if item.Done then "true" else ""
     let editClass = if item.IsEditing then "editing" else ""
     li [ attribute "class" ((if item.Done then "completed " else " ") + editClass)]
-       [ div [  attribute "class" "view"
-                onDblClick (fun x -> EditItem item) ]
-             [ input [  property "className" "toggle"
-                        property "type" "checkbox"
-                        property "checked" itemChecked
-                        onMouseClick (fun e -> ToggleItem item) ]
-               label [] [ text item.Name ]
-               button [ attribute "class" "destroy"
-                        onMouseClick (fun e -> Destroy item) ] [] ]
+       [ div [ attribute "class" "view"
+               onDblClick (fun x -> EditItem item) ]
+             [ input [ property "className" "toggle"
+                       property "type" "checkbox"
+                       property "checked" itemChecked
+                       onMouseClick (fun e -> ToggleItem item) ]
+               // Display a label with the item name and
+               // a button to destroy the item (classname "destroy")
+               failwith "TODO" ]
          input [ attribute "class" "edit"
                  attribute "value" item.Name
-                 property "id" ("item-"+item.Id.ToString())
+                 property "id" ("item-" + string item.Id)
                  onBlur (fun e -> SaveItem (item, (unbox e?target?value))) ] ]
 
 let itemList items activeFilter =
@@ -201,32 +194,31 @@ let itemList items activeFilter =
 let todoMain model =
     let items = model.Items
     let allChecked = items |> List.exists (fun i -> not i.Done)
-    section [  attribute "class" "main"
-               Style [ "style", "block" ] ]
-            [   input [ property "id" "toggle-all"
-                        attribute "class" "toggle-all"
-                        property "type" "checkbox"
-                        property "checked" (if not allChecked then "true" else "")
-                        onMouseClick (fun e ->
-                                    if allChecked
-                                    then CheckAll
-                                    else UnCheckAll) ]
-                label [ attribute "for" "toggle-all" ]
-                      [ text "Mark all as complete" ]
-                (itemList items model.Filter) ]
+    section [ attribute "class" "main"
+              Style [ "style", "block" ] ]
+            [ input [ property "id" "toggle-all"
+                      attribute "class" "toggle-all"
+                      property "type" "checkbox"
+                      property "checked" (if not allChecked then "true" else "")
+                      onMouseClick (fun e ->
+                        if allChecked then CheckAll else UnCheckAll) ]
+              label [ attribute "for" "toggle-all" ]
+                    [ text "Mark all as complete" ]
+              (itemList items model.Filter) ]
 
 let view model =
-    section
-        [attribute "class" "todoapp"]
-        ((todoHeader model.Input)::(if model.Items |> List.isEmpty
-                then []
-                else [  (todoMain model)
-                        (todoFooter model) ] ))
+    let items =
+        // Return [ todoMain model; todoFooter model ]
+        // only if model.Items is not empty
+        failwith "TODO"
+    // Return a `section` tag with classname "todoapp"
+    // and in the body todoHeader + items
+    failwith "TODO"
 
 // Storage
 module Storage =
     let private STORAGE_KEY = "vdom-storage"
-    open Microsoft.FSharp.Core
+
     let fetch<'T> (): 'T [] =
         Browser.localStorage.getItem(STORAGE_KEY)
         |> function null -> "[]" | x -> unbox x
