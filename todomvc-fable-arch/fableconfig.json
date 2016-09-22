@@ -1,0 +1,9 @@
+{
+    "module": "commonjs",
+    "sourceMaps": true,
+    "projFile": "./todomvc.fsx",
+    "outDir": "temp",
+    "scripts": {
+        "postbuild": "node ../node_modules/webpack/bin/webpack"
+    }
+}

@@ -13,6 +13,7 @@
   "dependencies": {
     "core-js": "^2.4.1",
     "css-loader": "^0.25.0",
+    "fable-arch": "^0.9.4",
     "fable-compiler": "^0.6.7",
     "fable-compiler-netcore": "^0.6.7",
     "fable-core": "^0.6.3",
@@ -35,6 +36,7 @@
     "style-loader": "^0.13.1",
     "todomvc-app-css": "^2.0.6",
     "todomvc-common": "^1.0.2",
+    "virtual-dom": "^2.1.1",
     "webpack": "^1.12.14",
     "webpack-dev-server": "^1.14.1"
   }
