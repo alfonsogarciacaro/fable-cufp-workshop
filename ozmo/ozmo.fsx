@@ -165,20 +165,18 @@ also collision detection.
 
 /// Apply step on Player's blob.
 let step dir blob =
-  // Compose functions above
-  failwith "TODO"
+  blob |> direct dir |> move |> bounce
 
 /// Check whether two blobs collide
 let collide (a:Blob) (b:Blob) =
   let dx = (a.X - b.X)*(a.X - b.X)
   let dy = (a.Y - b.Y)*(a.Y - b.Y)
   let dist = sqrt(dx + dy)
-  // Return true if blobs collide
-  failwith "TODO"
+  dist < abs(a.Radius - b.Radius)
 
 /// Remove all falling blobs that hit Player's blob
 let absorb (blob:Blob) (drops:Blob list) =
-  failwith "TODO"
+  drops |> List.filter (collide blob >> not)
 
 (**
 ## Game logic helpers
@@ -226,10 +224,9 @@ let updateDrops drops countdown =
   else drops, countdown
 
 /// Count growing and shrinking drops in the list
-let countDrops drops =
+let countDrops (drops: Blob list): int*int =
   let count color =
-    // Count drops of specific color
-    failwith "TODO"
+    drops |> List.filter (fun d -> d.color = color) |> List.length
   count grow, count shrink
 
 (**
@@ -293,9 +290,9 @@ and update blob drops countdown = async {
   // Count drops, apply physics and count them again
   let beforeGrow, beforeShrink = countDrops drops
   let drops =
-    // Apply transformations (gravity and move)
-    // and remove colliding drops
-    failwith "TODO"
+    drops
+    |> List.map (gravity >> move)
+    |> absorb blob
   let afterGrow, afterShrink = countDrops drops
   let drops = drops |> List.filter (fun blob -> blob.Y > 0.)
 

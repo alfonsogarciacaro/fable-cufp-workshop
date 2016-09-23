@@ -5,10 +5,5 @@
     "outDir": "temp",
     "scripts": {
         "postbuild": "node ../node_modules/webpack/bin/webpack"
-    },
-    "targets": {
-        "debug": {
-            "watch": true
-        }
     }
 }

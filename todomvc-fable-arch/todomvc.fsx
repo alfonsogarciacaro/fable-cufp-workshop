@@ -72,29 +72,36 @@ let update model msg =
         |> updateItems model
 
     let model' =
-        // Implement the missing operations
         match msg with
         | NoOp -> model
         | AddItem str ->
             let maxId =
                 if model.Items |> List.isEmpty then 1
-                else failwith "TODO"
-            (fun items ->
-                items @ [{  Id = maxId + 1
-                            Name = str
-                            Done = false
-                            IsEditing = false}])
-            |> updateItems {model with Input = ""}
-        | ChangeInput v -> failwith "TODO"
-        | MarkAsDone i -> failwith "TODO"
-        | CheckAll -> failwith "TODO"
-        | UnCheckAll -> failwith "TODO"
-        | Destroy i -> failwith "TODO"
-        | ToggleItem i -> failwith "TODO"
-        | SetActiveFilter f -> failwith "TODO"
-        | ClearCompleted -> failwith "TODO"
-        | EditItem i -> failwith "TODO"
-        | SaveItem (i,str) -> failwith "TODO"
+                else
+                    model.Items
+                    |> List.map (fun x -> x.Id)
+                    |> List.max
+            updateItems {model with Input = ""} (fun items ->
+                items@[{ Id=maxId + 1; Name=str; Done=false; IsEditing=false }])
+        | ChangeInput v -> {model with Input = v}
+        | MarkAsDone i ->
+            updateItem {i with Done = true} model
+        | CheckAll -> checkAllWith true
+        | UnCheckAll -> checkAllWith false
+        | Destroy i ->
+            List.filter (fun i' -> i'.Id <> i.Id)
+            |> updateItems model
+        | ToggleItem i ->
+            updateItem {i with Done = not i.Done} model
+        | SetActiveFilter f ->
+            { model with Filter = f }
+        | ClearCompleted ->
+            List.filter (fun i -> not i.Done)
+            |> updateItems model
+        | EditItem i ->
+            updateItem { i with IsEditing = true} model
+        | SaveItem (i,str) ->
+            updateItem { i with Name = str; IsEditing = false} model
     let jsCall =
         match msg with
         | EditItem i -> toActionList(fun x ->
@@ -137,11 +144,10 @@ let todoFooter model =
                [ strong [] [ text activeCount ]
                  text " items left" ]
           filters model
-          // Display a button with the text "Clear completed",
-          // classname "clear-completed" and display style
-          // matching `clearVisibility`, which triggers the
-          // appropriate action on mouse click.
-          failwith "TODO" ]
+          button [ attribute "class" "clear-completed"
+                   Style [ "display", clearVisibility ]
+                   onMouseClick (fun _ -> ClearCompleted) ]
+                 [ text "Clear completed" ] ]
 
 let inline onInput x =
     onEvent "oninput" (fun e -> x (unbox e?target?value)) 
@@ -173,9 +179,9 @@ let listItem item =
                        property "type" "checkbox"
                        property "checked" itemChecked
                        onMouseClick (fun e -> ToggleItem item) ]
-               // Display a label with the item name and
-               // a button to destroy the item (classname "destroy")
-               failwith "TODO" ]
+               label [] [ text item.Name ]
+               button [ attribute "class" "destroy"
+                        onMouseClick (fun e -> Destroy item) ] [] ]
          input [ attribute "class" "edit"
                  attribute "value" item.Name
                  property "id" ("item-" + string item.Id)
@@ -208,13 +214,11 @@ let todoMain model =
 
 let view model =
     let items =
-        // Return [ todoMain model; todoFooter model ]
-        // only if model.Items is not empty
-        failwith "TODO"
-    // Return a `section` tag with classname "todoapp"
-    // and in the body todoHeader + items
-    failwith "TODO"
-
+        if List.isEmpty model.Items
+        then []
+        else [todoMain model; todoFooter model]
+    section [attribute "class" "todoapp"]
+            ((todoHeader model.Input)::items)
 // Storage
 module Storage =
     let private STORAGE_KEY = "vdom-storage"
