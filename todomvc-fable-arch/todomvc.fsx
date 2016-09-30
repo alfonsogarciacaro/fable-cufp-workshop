@@ -77,36 +77,26 @@ let update model msg =
         | AddItem str ->
             let maxId =
                 if model.Items |> List.isEmpty then 1
-                else
-                    model.Items
-                    |> List.map (fun x -> x.Id)
-                    |> List.max
+                else failwith "TODO"
             updateItems {model with Input = ""} (fun items ->
-                items@[{ Id=maxId + 1; Name=str; Done=false; IsEditing=false }])
-        | ChangeInput v -> {model with Input = v}
-        | MarkAsDone i ->
-            updateItem {i with Done = true} model
-        | CheckAll -> checkAllWith true
-        | UnCheckAll -> checkAllWith false
-        | Destroy i ->
-            List.filter (fun i' -> i'.Id <> i.Id)
-            |> updateItems model
-        | ToggleItem i ->
-            updateItem {i with Done = not i.Done} model
-        | SetActiveFilter f ->
-            { model with Filter = f }
-        | ClearCompleted ->
-            List.filter (fun i -> not i.Done)
-            |> updateItems model
-        | EditItem i ->
-            updateItem { i with IsEditing = true} model
-        | SaveItem (i,str) ->
-            updateItem { i with Name = str; IsEditing = false} model
+                items @ [{Id=maxId + 1; Name=str; Done=false; IsEditing=false}])
+        | ChangeInput v -> failwith "TODO"
+        | MarkAsDone i -> failwith "TODO"
+        | CheckAll -> failwith "TODO"
+        | UnCheckAll -> failwith "TODO"
+        | Destroy i -> failwith "TODO"
+        | ToggleItem i -> failwith "TODO"
+        | SetActiveFilter f -> failwith "TODO"
+        | ClearCompleted -> failwith "TODO"
+        | EditItem i -> failwith "TODO"
+        | SaveItem (i,str) -> failwith "TODO"
+
     let jsCall =
         match msg with
         | EditItem i -> toActionList(fun x ->
             document.getElementById("item-" + (i.Id.ToString())).focus())
         | _ -> []
+
     model', jsCall
 
 // Todo view
@@ -144,10 +134,11 @@ let todoFooter model =
                [ strong [] [ text activeCount ]
                  text " items left" ]
           filters model
-          button [ attribute "class" "clear-completed"
-                   Style [ "display", clearVisibility ]
-                   onMouseClick (fun _ -> ClearCompleted) ]
-                 [ text "Clear completed" ] ]
+          // Display a button with the text "Clear completed",
+          // classname "clear-completed" and display style
+          // matching `clearVisibility`, which triggers the
+          // appropriate action on mouse click.
+          failwith "TODO" ]
 
 let inline onInput x =
     onEvent "oninput" (fun e -> x (unbox e?target?value)) 
@@ -179,9 +170,9 @@ let listItem item =
                        property "type" "checkbox"
                        property "checked" itemChecked
                        onMouseClick (fun e -> ToggleItem item) ]
-               label [] [ text item.Name ]
-               button [ attribute "class" "destroy"
-                        onMouseClick (fun e -> Destroy item) ] [] ]
+               // Display a label with the item name and
+               // a button to destroy the item (classname "destroy")
+               failwith "TODO" ]
          input [ attribute "class" "edit"
                  attribute "value" item.Name
                  property "id" ("item-" + string item.Id)
@@ -214,11 +205,13 @@ let todoMain model =
 
 let view model =
     let items =
-        if List.isEmpty model.Items
-        then []
-        else [todoMain model; todoFooter model]
-    section [attribute "class" "todoapp"]
-            ((todoHeader model.Input)::items)
+        // Return [ todoMain model; todoFooter model ]
+        // only if model.Items is not empty
+        failwith "TODO"
+    // Return a `section` tag with classname "todoapp"
+    // and in the body todoHeader + items
+    failwith "TODO"
+
 // Storage
 module Storage =
     let private STORAGE_KEY = "vdom-storage"

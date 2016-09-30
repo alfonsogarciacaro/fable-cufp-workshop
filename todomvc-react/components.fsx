@@ -156,7 +156,8 @@ type TodoItem(props, ctx) as this =
         this.setState({ Editing = false })
 
     member this.HandleDoubleClick(_) =
-        this.setState({ Editing = true })
+        // Change the state to editing
+        failwith "TODO"
 
     member this.render() =
         let element =
@@ -177,13 +178,13 @@ type TodoItem(props, ctx) as this =
                         OnChange (fun _ ->
                             this.props.CompleteTodo(this.props.Todo.Id))
                     ] []
-                    R.label [
-                        OnDoubleClick this.HandleDoubleClick 
-                    ] [ R.str this.props.Todo.Text ]
-                    R.div [
-                        ClassName "destroy"
-                        OnClick (fun _ -> this.props.DeleteTodo(this.props.Todo.Id))
-                    ] []
+                    // Write a `label` that handles double clicks
+                    // and contains the text of the Todo in props.  
+                    // Tip: Use R.str to add strings as React Element children
+                    failwith "TODO"
+                    // Write a `div` with the classname "destroy" which
+                    // deletes the Todo on clicks (no children).
+                    failwith "TODO"
                 ]
         R.li [ClassName(
                 classNames [
@@ -200,12 +201,10 @@ let Header (props: HeaderProps) =
     R.header [ClassName "header"] [
         R.h1 [] [R.str "todos"]
         R.com<TodoTextInput,_,_>
-            { new TodoTextInputProps with
-                member __.OnSave(text: string) = props.AddTodo text
-                member __.Placeholder = "What needs to be done?"
-                member __.Text = None
-                member __.Editing = false
-                member __.NewTodo = true } []
+            // Instantiate TodoTextInputProps with an object expression as above to:
+            //  - Add a todo on save
+            //  - Show "What needs to be done?" as placeholder
+            (failwith "TODO") []
     ]
 
 type FooterProps =
@@ -250,11 +249,12 @@ let Footer =
             |> List.map (fun filter ->
                 [renderFilterLink filter props.Filter props.OnShow]
                 |> R.li [Key (string filter)])
-        R.footer [ClassName "footer"] [
-            renderTodoCount props.ActiveCount
-            R.ul [ClassName "filters"] listItems
-            R.opt(renderClearButton props.CompletedCount props.OnClearCompleted)
-        ]
+        // Return a `footer` tag with classname "footer" and the following children
+        //  - The result of `renderTodoCount``
+        //  - A `ul` tag with classname "filters" and the `listItems` as children
+        //  - The result of `renderClearButton`
+        // Tip: Use R.opt to add option types as React Element children
+        failwith "TODO"
 
 type MainSectionProps = { Todos: Todo[]; Dispatch: TodoAction->unit }
 type MainSectionState = { Filter: TodoFilter }
@@ -300,9 +300,8 @@ type MainSection(props, ctx) as this =
 
     member this.render() =
         let filteredTodos =
-            props.Todos
-            |> Array.filter todoFilters.[this.state.Filter]
-            |> Array.toList
+            // Filter Todos in `props` with the current filter in `state`.
+            failwith "TODO"
         let completedCount =
             (0, this.props.Todos) ||> Array.fold (fun count todo ->
                 if todo.Completed then count + 1 else count)
@@ -367,29 +366,14 @@ let reducer (state: Todo[]) = function
             |> (+) 1
         state
         |> Array.append [|{Id=id; Completed=false; Text=text}|]
-    | DeleteTodo id ->
-        state
-        |> Array.filter(fun todo -> todo.Id <> id) 
-    | EditTodo(id, text) ->
-        state
-        |> Array.map(fun todo ->
-            if todo.Id = id
-            then { todo with Text=text }
-            else todo)
-    | CompleteTodo id ->
-        state
-        |> Array.map(fun todo ->
-            if todo.Id = id
-            then { todo with Completed=not todo.Completed }
-            else todo)
+    | DeleteTodo id -> failwith "TODO"
+    | EditTodo(id, text) -> failwith "TODO"
+    | CompleteTodo id -> failwith "TODO"
     | CompleteAll ->
         let areAllMarked =
             state |> Array.forall(fun todo -> todo.Completed)
-        state
-        |> Array.map(fun todo -> { todo with Completed=not areAllMarked})
-    | ClearCompleted ->
-        state
-        |> Array.filter(fun todo -> not todo.Completed)
+        failwith "TODO"
+    | ClearCompleted -> failwith "TODO"
 
 let store =
     { Text="Use Fable + React + Redux"; Completed=false; Id=0}
