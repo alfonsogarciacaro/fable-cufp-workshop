@@ -8,10 +8,6 @@ and open the web app in a browser.
 
 Use `npm run build-debug` to start Fable in
 watch mode (F# source files will be recompiled
-on save). Then you can run `npm run start-debug`
-in a different terminal window to launch a
-**Webpack Dev Server** that will automatically
-update React components without refreshing the page
-(open `localhost:8080` in your browser to see the app).
+on save).
 
 > This app is compatible with the [Redux DevTools Extension](http://zalmoxisus.github.io/redux-devtools-extension/)

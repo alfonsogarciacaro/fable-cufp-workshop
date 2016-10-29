@@ -4,16 +4,25 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "build": "node ../node_modules/fable-compiler",
+    "build": "fable",
     "start": "node ../server",
-    "build-debug": "node ../node_modules/fable-compiler -d",
-    "start-debug": "node ../node_modules/webpack-dev-server/bin/webpack-dev-server --config webpack-dev-server.config.js",
+    "build-debug": "fable -d",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Alfonso García-Caro",
   "license": "ISC",
-  "engines": {
-    "fable": "^0.6.3"
+  "dependencies": {
+    "babel-runtime": "^6.18.0",
+    "fable-core": "^0.7.5-alpha.8",
+    "todomvc-app-css": "^2.0.6",
+    "todomvc-common": "^1.0.2"
+  },
+  "devDependencies": {
+    "babel-plugin-transform-runtime": "^6.15.0",
+    "fable-compiler": "^0.7.5-alpha.18",
+    "fable-react": "^0.7.0-alpha.1",
+    "rollup-plugin-replace": "^1.1.1",
+    "rollup-plugin-uglify": "^1.0.1"
   }
 }
