@@ -5,8 +5,8 @@ Fable includes [React bindings and helpers](https://www.npmjs.com/package/fable-
 to make interaction with the tool more idiomatic in F#.
 *)
 
-#r "../node_modules/fable-core/Fable.Core.dll"
-#r "../node_modules/fable-react/Fable.React.dll"
+#r "node_modules/fable-core/Fable.Core.dll"
+#r "node_modules/fable-react/Fable.React.dll"
 
 (**
 ## Redux helper
